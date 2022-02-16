@@ -1,10 +1,12 @@
 package br.com.gac.financeiro.controller.validacao;
 
 public class ErroDeFormularioDto {
+	
 	private String campo;
 	private String erro;
 
 	public ErroDeFormularioDto(String campo, String erro) {
+		super();
 		this.campo = campo;
 		this.erro = erro;
 	}

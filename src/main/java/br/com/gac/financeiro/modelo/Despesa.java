@@ -72,4 +72,8 @@ public class Despesa {
 		this.dataLancamento = dataLancamento;
 	}
 
+	@Override
+	public String toString() {
+		return "descricao["+this.descricao+"]";
+	}
 }

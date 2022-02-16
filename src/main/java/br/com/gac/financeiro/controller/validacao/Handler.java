@@ -1,6 +1,7 @@
 package br.com.gac.financeiro.controller.validacao;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,28 +14,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@RestControllerAdvice
 public class Handler {
-	@RestControllerAdvice
-	public class ErroValidacaoHandler {
 
-		@Autowired
-		private MessageSource messageSource;
+	@Autowired
+	private MessageSource messageSource;
 
-		@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-		@ExceptionHandler(MethodArgumentNotValidException.class)
-		public List<ErroDeFormularioDto> handle(MethodArgumentNotValidException exception) {
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public List<ErroDeFormularioDto> handle(MethodArgumentNotValidException exception) {
 
-			List<ErroDeFormularioDto> dtos = new ArrayList<>();
-			List<FieldError> fieldErros = exception.getBindingResult().getFieldErrors();
+		List<ErroDeFormularioDto> dtos = new ArrayList<>();
+		List<FieldError> fieldErros = exception.getBindingResult().getFieldErrors();
 
-			fieldErros.forEach(e -> {
-				String mensagem = messageSource.getMessage(e, LocaleContextHolder.getLocale());
-				ErroDeFormularioDto erro = new ErroDeFormularioDto(e.getField(), mensagem);
-				dtos.add(erro);
-			});
+		fieldErros.forEach(e -> {
+			String mensagem = messageSource.getMessage(e, LocaleContextHolder.getLocale());
+			ErroDeFormularioDto erro = new ErroDeFormularioDto(e.getField(), mensagem);
+			dtos.add(erro);
+		});
 
-			return dtos;
-		}
-
+		return dtos;
 	}
+
 }

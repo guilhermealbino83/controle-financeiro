@@ -6,10 +6,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-import br.com.gac.financeiro.modelo.Receita;
+import br.com.gac.financeiro.modelo.Despesa;
 
-public class ReceitaForm {
-
+public class DespesaForm {
 	@NotNull(message = "Descricao deve ser preenchida")
 	@Size(min = 5, max = 2000, message = "Descricao deve ter entre 5 a 2000 caracteres")
 	private String descricao;
@@ -21,7 +20,7 @@ public class ReceitaForm {
 	@NotNull(message = "Data de Lançamento deve ser preenchida")
 	private LocalDate dataLancamento;
 
-	public ReceitaForm() {
+	public DespesaForm() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -49,14 +48,13 @@ public class ReceitaForm {
 		this.dataLancamento = dataLancamento;
 	}
 
-	public Receita converteReceita() {
-		return new Receita(this.descricao, this.valor, this.dataLancamento);
+	public Despesa converter() {
+		return new Despesa(this.descricao, this.valor, this.dataLancamento);
 	}
 
-	public void atualizaReceita(Receita receita) {
-		receita.setDescricao(this.descricao);
-		receita.setValor(this.valor);
-		receita.setDataLancamento(this.dataLancamento);
+	public void atualiza(Despesa despesa) {
+		despesa.setDescricao(this.descricao);
+		despesa.setValor(this.valor);
+		despesa.setDataLancamento(this.dataLancamento);
 	}
-
 }
