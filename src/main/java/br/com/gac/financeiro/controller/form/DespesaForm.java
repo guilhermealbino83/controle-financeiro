@@ -11,7 +11,7 @@ import br.com.gac.financeiro.modelo.Despesa;
 public class DespesaForm {
 	@NotNull(message = "Descricao deve ser preenchida")
 	@Size(min = 5, max = 2000, message = "Descricao deve ter entre 5 a 2000 caracteres")
-	private String descricao;
+	private String descricao = "";
 
 	@NotNull(message = "Valor deve ser preenchido")
 	@Positive(message = "Valor precisa ser positivo maior que zero")
@@ -19,6 +19,8 @@ public class DespesaForm {
 
 	@NotNull(message = "Data de Lançamento deve ser preenchida")
 	private LocalDate dataLancamento;
+	
+	private String categoria = "";
 
 	public DespesaForm() {
 		// TODO Auto-generated constructor stub
@@ -46,6 +48,15 @@ public class DespesaForm {
 
 	public void setDataLancamento(LocalDate dataLancamento) {
 		this.dataLancamento = dataLancamento;
+	}
+
+	
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 
 	public Despesa converter() {

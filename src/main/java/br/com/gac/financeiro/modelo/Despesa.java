@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -20,16 +21,26 @@ public class Despesa {
 	private Double valor;
 	private LocalDateTime dataCriacao;
 	private LocalDate dataLancamento;
+	@ManyToOne
+	private DespesaCategoria categoria;
 
 	public Despesa() {
 		// Contrutor padão para o SP JPA
 	}
 
-	public Despesa(String descricao, Double valor, LocalDate dataLancamento) {
+	public Despesa(String descricao, Double valor, LocalDate dataLancamento, DespesaCategoria categoria) {
 		this.descricao = descricao;
 		this.valor = valor;
 		this.dataCriacao = LocalDateTime.now();
 		this.dataLancamento = dataLancamento;
+		this.categoria = categoria;
+	}
+	
+	public Despesa(String descricao, Double valor, LocalDate dataLancamento) {
+		this.descricao = descricao;
+		this.valor = valor;
+		this.dataCriacao = LocalDateTime.now();
+		this.dataLancamento = dataLancamento;		
 	}
 
 	public Long getId() {
@@ -70,6 +81,16 @@ public class Despesa {
 
 	public void setDataLancamento(LocalDate dataLancamento) {
 		this.dataLancamento = dataLancamento;
+	}
+	
+	
+
+	public DespesaCategoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(DespesaCategoria categoria) {
+		this.categoria = categoria;
 	}
 
 	@Override
