@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.gac.financeiro.controller.dto.ReceitaDto;
@@ -31,9 +35,22 @@ public class ReceitaController {
 	private ReceitaRepository receitaRepository;
 
 	@GetMapping
-	public ResponseEntity<List<ReceitaDto>> lista() {
-		return ResponseEntity
-				.ok(receitaRepository.findAll().stream().map(ReceitaDto::new).collect(Collectors.toList()));
+	public ResponseEntity<List<ReceitaDto>> lista(@RequestParam(required = false) String descricao) {
+
+		if (descricao == null) {
+			return ResponseEntity
+					.ok(receitaRepository.findAll().stream().map(ReceitaDto::new).collect(Collectors.toList()));
+		} else {
+			List<ReceitaDto> lista = receitaRepository.buscaPorDescricao(descricao).stream().map(ReceitaDto::new)
+					.collect(Collectors.toList());
+
+			if (lista.isEmpty()) {
+				return ResponseEntity.notFound().build();
+			} else {
+				return ResponseEntity.ok(lista);
+			}
+		}
+
 	}
 
 	@GetMapping("/{id}")
@@ -44,6 +61,21 @@ public class ReceitaController {
 			return ResponseEntity.ok(new ReceitaDto(optional.get()));
 		}
 		return ResponseEntity.notFound().build();
+	}
+
+	@GetMapping("/{ano}/{mes}")
+	public ResponseEntity<List<ReceitaDto>> listaPorAnoMes(@PathVariable(name = "ano") @NotNull @Min(1900) @Max(2100) int ano,
+			@PathVariable(name="mes") @NotNull @Min(1) @Max(12) int mes) {
+
+		List<ReceitaDto> lista = receitaRepository.buscaPorAnoMes(ano, mes).stream().map(ReceitaDto::new)
+				.collect(Collectors.toList());
+
+		if (lista.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		} else {
+			return ResponseEntity.ok(lista);
+		}
+
 	}
 
 	@PostMapping
@@ -66,7 +98,7 @@ public class ReceitaController {
 		}
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ReceitaDto> Deletar(@PathVariable Long id) {

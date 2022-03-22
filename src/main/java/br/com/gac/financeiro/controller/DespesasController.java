@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.gac.financeiro.controller.dto.DespesaDto;
+import br.com.gac.financeiro.controller.dto.ReceitaDto;
 import br.com.gac.financeiro.controller.form.DespesaForm;
 import br.com.gac.financeiro.modelo.Despesa;
 import br.com.gac.financeiro.modelo.DespesaCategoria;
@@ -55,7 +59,7 @@ public class DespesasController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<DespesaDto> lista(@PathVariable Long id) {
+	public ResponseEntity<DespesaDto> lista(@PathVariable(required = false) Long id) {
 		Optional<Despesa> optional = despesaRepository.findById(id);
 
 		if (optional.isPresent()) {
@@ -80,6 +84,21 @@ public class DespesasController {
 		return ResponseEntity.notFound().build();
 	}
 
+	@GetMapping("/{ano}/{mes}")
+	public ResponseEntity<List<DespesaDto>> listaPorAnoMes(@PathVariable(name = "ano") @NotNull @Min(1900) @Max(2100) int ano,
+			@PathVariable(name="mes") @NotNull @Min(1) @Max(12) int mes) {
+
+		List<DespesaDto> lista = despesaRepository.buscaPorAnoMes(ano, mes).stream().map(DespesaDto::new)
+				.collect(Collectors.toList());
+
+		if (lista.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		} else {
+			return ResponseEntity.ok(lista);
+		}
+
+	}
+	
 	@PostMapping
 	@Transactional
 	public ResponseEntity<DespesaDto> cadastrar(@RequestBody @Valid DespesaForm form) {
