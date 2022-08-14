@@ -16,4 +16,9 @@ public interface ReceitaRepository extends JpaRepository<Receita, Long>{
 	@Query("SELECT r FROM Receita r WHERE YEAR(dataLancamento) = :ano AND MONTH(dataLancamento) = :mes")
 	List<Receita> buscaPorAnoMes(@Param("ano") int ano, @Param("mes") int mes);
 	
+	@Query(value = "SELECT sum(r.valor) valor"
+			+ " FROM receitas r "
+			+ " WHERE YEAR(r.data_lancamento) = :ano "
+			+ " AND MONTH(r.data_lancamento) = :mes", nativeQuery = true)
+	double resumoPorAnoMes(@Param("ano") int ano, @Param("mes") int mes);
 }
